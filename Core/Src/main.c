@@ -120,33 +120,26 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    HAL_Delay(200);
-    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+    //HAL_Delay(200);
+    //HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 
-    if(BankSwitch == 1)
+    //if(BankSwitch == 1)
     {
       /************************* Flash writing ************************/
       printf("Flash erasing...\r\n");
+
       if(FLASH_If_Erase(BankInActive) != FLASHIF_OK)
       {
         printf("Flash erasing error\r\n");
         while(1){};
       }
-#if 1
-      printf("Flash writing...\r\n");
-      __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_ALL_ERRORS);
+
       if(FLASH_If_Write(FLASH_START_BANK2, (uint32_t *)FLASH_START_BANK1, 0x40000) != FLASHIF_OK)
       {
         printf("Flash writing error\r\n");
         while(1){};
       }
-#else
-      for(int i=FLASH_START_BANK1; i<FLASH_START_BANK1+0x40000; i++)
-      {
-        checksum += *(char *)i;
-      }
-      printf("Flash reading finished : checksum : 0x%x\r\n", (int)checksum);
-#endif
+
       printf("Flash writing finished\r\n");
       /************************* Bank switch ************************/
       printf("Bank switch!!!\r\n");
@@ -256,7 +249,7 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-  BankSwitch = 1;
+  BankSwitch++;
 }
 /* USER CODE END 4 */
 
